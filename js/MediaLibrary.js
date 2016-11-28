@@ -25,6 +25,7 @@ MediaLibrary.prototype = {
   init: function () {
     this.bindControls();
     this.getPlaylists();
+    this.remoteControlOpen(this);
   },
   bindControls: function () {
     $('#musicLibrary').click(jQuery.proxy(this.musicLibraryOpen, this));
