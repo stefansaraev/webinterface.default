@@ -484,38 +484,6 @@ MediaLibrary.prototype = {
       $('#albumDetails' + event.data.album.albumid).show();
     }
   },
-  togglePosterView: function (event) {
-    var view=event.data.mode;
-    var wthumblist,hthumblist,hthumbdetails;
-    $("#toggleBanner").removeClass('activeMode');
-    $("#togglePoster").removeClass('activeMode');
-    $("#toggleLandscape").removeClass('activeMode');
-    switch(view) {
-      case 'landscape':
-        xbmc.core.setCookie('TVView','landscape');
-        wthumblist='210px';
-        hthumblist='118px';
-        hthumbdetails='213px';
-        $("#toggleLandscape").addClass('activeMode');
-        break;
-      case 'banner':
-        xbmc.core.setCookie('TVView','banner');
-        wthumblist='379px';
-        hthumblist='70px';
-        hthumbdetails='70px';
-        $("#toggleBanner").addClass('activeMode');
-        break;
-      default:
-        xbmc.core.setCookie('TVView','poster');
-        wthumblist='135px';
-        hthumblist='199px';
-        hthumbdetails='559px';
-        $("#togglePoster").addClass('activeMode');
-        break;
-  }
-    $(".floatableTVShowCover, .floatableTVShowCover div.imgWrapper, .floatableTVShowCover img, .floatableTVShowCover div.imgWrapper div.inner").css('width',wthumblist).css('height',hthumblist);
-    $(".floatableTVShowCoverSeason div.imgWrapper, .floatableTVShowCoverSeason div.imgWrapper div.inner,.floatableTVShowCoverSeason img, .floatableTVShowCoverSeason").css('height',hthumbdetails);
-  },
   displayTVShowDetails: function (event) {
     var tvshowDetailsContainer = $('#tvShowDetails' + event.data.tvshow.tvshowid);
     $('#topScrollFade').hide();
@@ -560,19 +528,6 @@ MediaLibrary.prototype = {
             tvshowDetailsContainer.append(showThumb);
             seasonSelectionSelect.trigger('change');
             $('#content').append(tvshowDetailsContainer);
-            if (xbmc.core.getCookie('TVView') !== null &&
-                xbmc.core.getCookie('TVView') !== 'banner'
-            ) {
-            var view=xbmc.core.getCookie('TVView');
-            switch(view) {
-              case 'poster':
-                togglePoster.trigger('click');
-                break;
-              case 'landscape':
-                toggleLandscape.trigger('click');
-                break;
-            }
-          }
             tvshowDetailsContainer.fadeIn();
           }
           $('#spinner').hide();
@@ -840,20 +795,6 @@ MediaLibrary.prototype = {
     if (!libraryContainer || libraryContainer.length === 0) {
       $('#spinner').show();
       toggle=$('<p>').addClass('toggle');
-      togglePoster= $('<span>Poster</span>');
-      togglePoster.attr('id', 'togglePoster')
-        .css('cursor','pointer')
-        .bind('click',{mode: 'poster'},jQuery.proxy(this.togglePosterView,this));
-      toggleBanner= $('<span>Banner</span>');
-      toggleBanner.attr('id', 'toggleBanner')
-        .css('cursor','pointer')
-        .addClass('activeMode')
-        .bind('click',{mode: 'banner'},jQuery.proxy(this.togglePosterView,this));
-      toggleLandscape= $('<span>Landscape</span>');
-      toggleLandscape.attr('id', 'toggleLandscape')
-        .css('cursor','pointer')
-        .bind('click',{mode: 'landscape'},jQuery.proxy(this.togglePosterView,this));
-      toggle.append(toggleBanner).append(' | ').append(togglePoster).append(' | ').append(toggleLandscape);
       this.toggle=toggle;
       xbmc.rpc.request({
         'context': this,
@@ -898,19 +839,6 @@ MediaLibrary.prototype = {
           libraryContainer.bind('scroll', { activeLibrary: libraryContainer }, jQuery.proxy(this.updateScrollEffects, this));
           libraryContainer.trigger('scroll');
           myScroll = new iScroll('tvshowLibraryContainer');
-          if (xbmc.core.getCookie('TVView') !== null &&
-              xbmc.core.getCookie('TVView') !== 'banner'
-          ) {
-            var view=xbmc.core.getCookie('TVView');
-            switch(view) {
-              case 'poster':
-                togglePoster.trigger('click');
-                break;
-              case 'landscape':
-                toggleLandscape.trigger('click');
-                break;
-            }
-          }
         }
       });
     } else {
